@@ -1,0 +1,68 @@
+﻿@{
+
+}
+
+<ul id="ul1"></ul>
+
+<div class="row row-cols-1 row-cols-md-3 g-4" id="row"></div>
+@section Scripts {
+    <script src="~/js/travel.js"></script>
+    <script>
+        const therow = document.querySelector('#row');
+
+        const infos = [
+            {
+                "stitle": "新北投溫泉區",
+                "xbody": "北投溫泉從日據時代便有盛名，深受喜愛泡湯的日人自然不會錯過...",
+                "address": "臺北市  北投區中山路、光明路沿線",
+                "file": {
+                    "img": [
+                        {
+                            "description": "北投溫泉溫泉博物館",
+                            "text": "http://www.travel.taipei/d_upload_ttn/sceneadmin/pic/11000848.jpg"
+                        }
+                    ]
+                }
+            },
+            // ... (加入其他資料)
+        ];
+
+        // 建立空字串以容納HTML結果
+        let htmlResult = '';
+
+        // 使用forEach迴圈遍歷infos陣列
+        spots.CommonFormat.Section.forEach((info) => {
+            const { stitle, xbody, address, file } = info;
+            let imgUrl = "";
+            try{
+                imgUrl = file.img[0].text;
+            }catch{
+                imgUrl = '未提供圖片';
+            };
+
+
+
+            // 將每筆資料的相關屬性組合成HTML片段
+            const htmlInfo = `
+                                <div class="col">
+                                    <div class="card h-100">
+                                        <img src="${imgUrl}" class="card-img-top" alt="${stitle}">
+                                    <div class="card-body">
+                                <h5 class="card-title">${stitle}</h5>
+                                 <p class="card-text">${xbody}</p>
+          </div>
+                  <div class="card-footer">
+                    <small class="text-muted">${address}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                `;
+
+            // 將HTML片段加入結果字串
+            htmlResult += htmlInfo;
+        });
+
+        // 將結果顯示在ul1中
+        therow.innerHTML = htmlResult;
+    </script>
+}
