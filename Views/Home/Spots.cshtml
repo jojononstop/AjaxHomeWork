@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewData["Title"] = "Spots";
+}
+
+<h1>Spots</h1>
+<div class="row mb-3">
+    <div></div>
+
+</div>
+<div class="row row-cols-1 row-cols-md-3 g-4" id="spots"></div>
+
+@section Scripts {
+    <script>
+        const serchData = {
+            "categoryId": 0,
+            "keyword": "北投",
+            "page": 1,
+            "pageSize": 12,
+            "sortType": "asc",
+            "sortBy": ""
+        };
+
+        //根據searchData的條件，讀取景點資料
+        const loadSpots = async () => {
+            const response = await fetch('@Url.Content("~/api/spots")', {
+                method: 'POST',
+                body: JSON.stringify(serchData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const datas = await response.json();
+            // console.log(datas);
+            const cardSpots = datas.spotsResult.map(spot => {
+                const { spotId, spotTitle, spotDescription, spotImage, address } = spot;
+                return (
+                    `
+                                     <div class="col">
+                        <div class="card h-100">
+                                            <img src="${spotImage}" class="card-img-top" alt="${spotTitle}">
+                            <div class="card-body">
+                                                <h5 class="card-title">${spotId} - ${spotTitle}</h5>
+                                                        <p class="card-text">${spotDescription.length <= 100 ? spotDescription : spotDescription.substring(0, 100)}...</p>
+                            </div>
+                            <div class="card-footer">
+                                        <small class="text-body-secondary">${address}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                            `
+                )
+            });
+
+            spots.innerHTML = cardSpots.join("");
+        }
+        //載入景點
+        loadSpots();
+    </script>
+
+}
+

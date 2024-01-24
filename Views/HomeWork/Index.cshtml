@@ -44,19 +44,21 @@
 
             // 將每筆資料的相關屬性組合成HTML片段
             const htmlInfo = `
-                                <div class="col">
-                                    <div class="card h-100">
-                                        <img src="${imgUrl}" class="card-img-top" alt="${stitle}">
-                                    <div class="card-body">
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="${imgUrl}" class="card-img-top" alt="${stitle}">
+                            <div class="card-body">
                                 <h5 class="card-title">${stitle}</h5>
-                                 <p class="card-text">${xbody}</p>
-          </div>
-                  <div class="card-footer">
-                    <small class="text-muted">${address}</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                `;
+                                        <p class="card-text">${xbody.length <= 100 ? xbody : xbody.substring(0, 100)}...p>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">${address}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+
 
             // 將HTML片段加入結果字串
             htmlResult += htmlInfo;

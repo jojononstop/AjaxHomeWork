@@ -23,6 +23,11 @@ namespace Ajax0122.Controllers
             return View();
         }
 
+        public IActionResult Spots()
+        {
+            return View();
+        }
+
         public IActionResult First()
         {
             return View();
