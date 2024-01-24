@@ -1,0 +1,50 @@
+﻿﻿@{
+	ViewData["Title"] = "Address";
+}
+
+<h1>Address</h1>
+<select id="City">
+
+</select>
+<select id="District">
+
+</select>
+<select id="Road">
+
+</select>
+
+@section Scripts{
+	<script>
+		const selCity = document.querySelector('#City');
+		const selDist = document.querySelector('#District');
+		const selRoad = document.querySelector('#Road');
+
+		(async () => {
+			const response = await fetch('@Url.Content("~/api/cities")');
+			const cities = await response.json();
+			const optCities = cities.map(city => `<option value="${city}">${city}</option>`);
+			selCity.innerHTML = optCities.join("");
+			loadDist();
+		})();
+
+		const loadDist = async () => {
+			const city = selCity.options[selCity.selectedIndex].value;
+			const response2 = await fetch('@Url.Content("~/api/districts")' + `?city=${city}`);
+			const dists = await response2.json();
+			const optDists = dists.map(dist => `<option value="${dist}">${dist}</option>`);
+			selDist.innerHTML = optDists.join("");
+			loadRoad();
+		}
+
+		const loadRoad = async () => {
+			const district = selDist.options[selDist.selectedIndex].value;
+			const response3 = await fetch('@Url.Content("~/api/roads")' + `?siteId=${district}`);
+			const roads = await response3.json();
+			const optRoads = roads.map(road => `<option value="${road}">${road}</option>`);
+			selRoad.innerHTML = optRoads.join("");
+		}
+
+		selCity.addEventListener('change',loadDist);
+		selDist.addEventListener('change',loadRoad)
+	</script>
+}
