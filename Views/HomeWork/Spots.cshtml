@@ -1,0 +1,125 @@
+﻿﻿@{
+    ViewData["Title"] = "Spots";
+}
+
+<h1>Spots</h1>
+<div class="row">
+    <div class="col-3">
+        <select id="selectCategory" class="form-select mb-3">
+            <option value="0">所有分類</option>
+            <option value="1">分類1</option>
+            <option value="2">分類2</option>
+        </select>
+    </div>
+    <div class="col-6">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+            </ul>
+        </nav>
+    </div>
+    <div class="col-3">
+        <input type="search" id="inputKeyword" class="form-control mb-3" placeholder="景點搜尋" />
+        <label for="selectSort" class="form-label">排序方式</label>
+        <select id="selectSort" class="form-select mb-3">
+            <option value="spotTitle">景點名稱</option>
+            <option value="categoryId">景點類別</option>
+        </select>
+        <label for="selectPageSize" class="form-label">每頁顯示筆數</label>
+        <select id="selectPageSize" class="form-select mb-3">
+            <option value="9">9筆</option>
+            <option value="6">6筆</option>
+            <option value="12">12筆</option>
+        </select>
+    </div>
+</div>
+<div class="row row-cols-1 row-cols-md-3 g-4" id="spots">
+</div>
+
+@section Scripts {
+    <script>
+        const searchData = {
+            "categoryId": 0,
+            "keyword": "北投",
+            "page": 1,
+            "pageSize": 9,
+            "sortType": "asc",
+            "sortBy": ""
+        };
+
+        const divSpots = document.querySelector('#spots');
+        const inputKeyword = document.querySelector('#inputKeyword');
+        const ulPagination = document.querySelector('.pagination');
+        const selectCategory = $('#selectCategory');
+        const selectSort = $('#selectSort');
+        const selectPageSize = $('#selectPageSize');
+
+        //根據searchData的條件 讀取景點資料
+        const loadSpots = async () => {
+            const reponse = await fetch('@Url.Content("~/api/spots")', {
+                method: 'POST',
+                body: JSON.stringify(searchData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const datas = await reponse.json();
+
+            //產生分頁數
+            let liPaging = "";
+            for (let i = 1, max = datas.totalPages; i <= max; i++) {
+                liPaging += `<li class="page-item" onclick ="paginHandler(${i})"><a class="page-link" href="#">${i}</a></li>`
+            }
+            ulPagination.innerHTML = liPaging;
+
+            const cardSpots = datas.spotsResult.map(spot => {
+                const { spotId, spotDescription, spotImage, address, spotTitle } = spot;
+                return (
+                    `<div class="col">
+                                        <div class="card h-100">
+                                        <img src="${spotImage}" class="card-img-top" alt="${spotTitle}">
+                                        <div class="card-body">
+                                        <h5 class="card-title">${spotId} - ${spotTitle}</h5>
+                                        <p class="card-text">">${spotDescription.length <= 100 ? spotDescription : spotDescription.substring(0, 100)}...</p>
+                                        </div>
+                                        <div class="card-footer">
+                                        <small class="text-body-secondary">${address}</small>
+                                        </div>
+                                        </div>
+                                        </div>`
+                )
+            });
+
+            divSpots.innerHTML = cardSpots.join('');
+        }
+
+        inputKeyword.addEventListener('keydown', (event) => {
+            searchData.keyword = event.target.value;
+            searchData.page = 1;
+            loadSpots();
+        });
+
+        const paginHandler = (page) => {
+            searchData.page = page;
+            loadSpots();
+        }
+        selectCategory.addEventListener('change', function () {
+            searchData.categoryId = parseInt(this.value);
+            searchData.page = 1;
+            loadSpots();
+        });
+
+        selectSort.addEventListener('change', function () {
+            searchData.sortBy = this.value;
+            loadSpots();
+        });
+
+        selectPageSize.addEventListener('change', function () {
+            searchData.pageSize = parseInt(this.value);
+            searchData.page = 1;
+            loadSpots();
+        });
+
+        //載入景點
+        loadSpots();
+    </script>
+}

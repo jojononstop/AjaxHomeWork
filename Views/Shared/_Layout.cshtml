@@ -10,6 +10,7 @@
 </head>
 <body>
     <header>
+        @RenderSection("Styles", required: false)
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Ajax0122</a>
@@ -23,6 +24,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Spots">Spots</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
@@ -34,8 +38,15 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="HomeWork" asp-action="Index">HomeWork.Index</a>
                         </li>
+                   
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="HomeWork" asp-action="Register">HomeWork.Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="HomeWork" asp-action="Spots">HomeWork.Spots</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="HomeWork" asp-action="CheckAccount">HomeWork.CheckAccount</a>
                         </li>
                     </ul>
                 </div>

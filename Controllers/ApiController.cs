@@ -81,9 +81,9 @@ namespace Ajax0122.Controllers
             //總共有多少筆資料
             int TotalCount = spots.Count();
             //設定每頁顯示多少筆資料
-            int pageSize = _serch.pageSize ?? 9;
+            int pageSize = _serch.PageSize ?? 9;
             //目前要顯示第幾頁
-            int page = _serch.page ?? 1;
+            int page = _serch.Page ?? 1;
             //計算總共有幾頁
             int TotalPages = (int)Math.Ceiling((decimal)TotalCount / pageSize);
 
@@ -141,11 +141,17 @@ namespace Ajax0122.Controllers
         }
         return Content("帳號可使用");
     }
+        public IActionResult Categories()
+        {
+            return Json(_dbContext.Categories);
+        }
 
-    //public IActionResult Spot()
-    //{
-    //    return Content("spots");
-    //}
-}
+        public IActionResult SpotsTitle(string keyword)
+        {
+            var spots = _dbContext.Spots.Where(s => s.SpotTitle.Contains(keyword)).Select(s => s.SpotTitle).Take(8);
+            return Json(spots);
+
+        }
+    }
 }
 

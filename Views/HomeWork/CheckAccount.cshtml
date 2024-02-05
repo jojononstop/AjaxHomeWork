@@ -1,0 +1,42 @@
+﻿@{
+	ViewData["Title"] = "CheckAccount";
+}
+
+<h1>CheckAccount</h1>
+<form>
+	<div class="mb-3">
+		<label for="name" class="form-label">姓名:</label>
+		<input type="text" class="form-control" id="name" name="Name">
+	</div>
+	<div class="mb-3">
+		<label for="email" class="form-label">電子郵件:</label>
+		<input type="email" class="form-control" id="email" name="Email">
+	</div>
+	<div class="mb-3">
+		<label for="age" class="form-label">年齡:</label>
+		<input type="number" class="form-control" id="age" name="Age">
+	</div>
+	<button type="submit" class="btn btn-primary" id="button">送出</button>
+	<div class="alert alert-info" id="div1"></div>
+</form>
+
+@section Scripts {
+	<script>
+		const userName = document.querySelector('#name');
+		const userAge = document.querySelector('#age');
+		const userEmail = document.querySelector('#email');
+		const btn = document.querySelector('#button');
+		const divInfo = document.querySelector('#div1');
+
+
+		btn.addEventListener('click', async (event) => {
+			event.preventDefault();
+
+			const url = `@Url.Content("~/api/checkAccount?name=")${userName.value}`;
+			const response = await fetch(url);
+			const datas = await response.text();
+
+			divInfo.innerHTML = `<div class="alert alert-info">${datas}</div>`;
+		});
+	</script>
+}

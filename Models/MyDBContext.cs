@@ -23,7 +23,7 @@ public partial class MyDBContext : DbContext
 
     public virtual DbSet<Member> Members { get; set; }
 
-    //public virtual DbSet<Spot> SpotImagesSpot { get; set; }
+    public virtual DbSet<Spot> Spots { get; set; }
 
     public virtual DbSet<SpotImage> SpotImages { get; set; }
 

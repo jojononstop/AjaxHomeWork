@@ -1,42 +1,142 @@
 ﻿@{
-	ViewData["Title"] = "Register";
+    ViewData["Title"] = "Register";
 }
 
 <h1>Register</h1>
-<form>
-	<div class="mb-3">
-		<label for="name" class="form-label">姓名:</label>
-		<input type="text" class="form-control" id="name" name="Name">
-	</div>
-	<div class="mb-3">
-		<label for="email" class="form-label">電子郵件:</label>
-		<input type="email" class="form-control" id="email" name="Email">
-	</div>
-	<div class="mb-3">
-		<label for="age" class="form-label">年齡:</label>
-		<input type="number" class="form-control" id="age" name="Age">
-	</div>
-	<button type="submit" class="btn btn-primary" id="button">送出</button>
-	<div class="alert alert-info" id="div1"></div>
+<form id="userForm">
+    <fieldset>
+        <legend>個人資料<em>(必填)</em></legend>
+        <div class="mb-3">
+            <label for="username">姓名:</label>
+            <br />
+            <input type="text" id="username" name="Name" placeholder="Guest" maxlength="15" />
+            <div id="namecheck"></div>
+        </div>
+        <div class="mb-3">
+            <label for="useremail">電子郵件:</label>
+            <br />
+            <input type="email" id="useremail" name="Email" placeholder="Email" maxlength="20" />
+        </div>
+        <div class="mb-3">
+            <label for="useremail">密碼:</label>
+            <br />
+            <input type="password" id="userpassword" name="Password" placeholder="Password" maxlength="20" />
+            <div id="namecheck"></div>
+        </div>
+        <div class="mb-3">
+            <label for="useremail">確認密碼:</label>
+            <br />
+            <input type="password" id="userconfirmpassword" name="confirmpassword" placeholder="ConfirmPassword" maxlength="20" />
+            <div id="passwordcheck"></div>
+        </div>
+        <div class="mb-3">
+            <label for="userage">年紀:</label>
+            <br />
+            <input type="number" id="userage" name="Age" placeholder="age" maxlength="4" />
+        </div>
+        <div class="mb-3">
+            <label for="userimg">頭像:</label>
+            <br />
+            <input type="file" id="userimg" name="Image" />
+        </div>
+        <div class="mb-3">
+            <input type="submit" id="submit" value="送出" class="btn btn-primary" />
+        </div>
+    </fieldset>
 </form>
+<div id="output" class="p-5"></div>
 
 @section Scripts {
-	<script>
-		const userName = document.querySelector('#name');
-		const userAge = document.querySelector('#age');
-		const userEmail = document.querySelector('#email');
-		const btn = document.querySelector('#button');
-		const divInfo = document.querySelector('#div1'); 
+    <script>
+        const customername = document.querySelector("#username");
+        const submit = document.querySelector("#submit");
+        const namecheck = document.querySelector("#namecheck");
+        const divoutput = document.querySelector("#output");
+        const password = document.querySelector("#userpassword");
+        const confirmpassword = document.querySelector("#userconfirmpassword");
+        const passwordcheck = document.querySelector("#passwordcheck");
+        let nameinput;
+
+        customername.addEventListener("keyup", async (elem) => {
+            nameinput = elem.target.value;
+
+            // console.log(nameinput);
+            try {
+                const nameurl = `@Url.Content("~/API/CheckAccount")?name=${nameinput}`;
+                const nameResponse = await fetch(nameurl);
+
+                //檢查連線
+                if (!nameResponse.ok) throw new Error(nameResponse.status);
+                //取得name
+                const name = await nameResponse.text();
+
+                console.log(name);
+                console.log(typeof (name));
 
 
-		btn.addEventListener('click', async (event) => {
-			event.preventDefault();
+                if (name == "True") {
+                    namecheck.style.color = "red";
+                    namecheck.innerHTML = "帳號已存在";
+                } else if (name == "False") {
+                    namecheck.style.color = "blue";
+                    namecheck.innerHTML = "帳號可使用";
+                }
+            } catch {
 
-			const url = `@Url.Content("~/api/checkAccount?name=")${userName.value}`;
-			const response = await fetch(url);
-			const datas = await response.text();
+            } finally {
 
-			divInfo.innerHTML = `<div class="alert alert-info">${datas}</div>`;
-		});
-	</script>
+            }
+        })
+        const theform = document.querySelector("#userForm")
+
+        submit.addEventListener("click", async (elem) => {
+            //停止submit按鈕 click時就會送出並關閉表單的行為
+            elem.preventDefault();
+
+            //透過FormData物件讀取資料
+            const formData = new FormData(theform);
+
+            for (const pair of formData.entries()) {
+                console.log(pair[0])
+                console.log(pair[1])
+            }
+            //檢查有沒有塞進去
+
+            try {
+                //將formData資料傳送到server端
+                const nameurl = '@Url.Content("~/API/Register")';
+                const nameResponse = await fetch(nameurl, {
+                    method: 'POST',
+                    //要包成物件用封包傳遞必須改成POST
+                    body: formData
+                    //把資料塞到body裡面
+                });
+                //檢查連線
+                if (!nameResponse.ok) throw new Error(nameResponse.status);
+                //取得name
+                const datas = await nameResponse.text();
+                //顯示在畫面上
+                divoutput.innerHTML = datas;
+                divoutput.style.background = "lightblue";
+            } catch {
+
+            } finally {
+
+            }
+        });
+
+        confirmpassword.addEventListener("blur", () => {
+            console.log("123")
+            console.log(password.value)
+            console.log(confirmpassword.value)
+            if (password.value !== confirmpassword.value) {
+                passwordcheck.innerHTML = "確認密碼跟密碼不一致"
+                submit.setAttribute("disabled", "");
+            }
+            if (password.value === confirmpassword.value) {
+                passwordcheck.innerHTML = ""
+                submit.removeAttribute("disabled");
+            }
+        })
+    </script>
 }

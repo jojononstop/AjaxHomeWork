@@ -9,7 +9,17 @@ namespace Ajax0122.Controllers
             return View();
         }
 
-        public IActionResult Register()
+        public IActionResult CheckAccount()
+        {
+            return View();
+        }
+
+        public IActionResult Register() 
+        {
+            return View();
+        }
+
+        public IActionResult Spots() 
         {
             return View();
         }

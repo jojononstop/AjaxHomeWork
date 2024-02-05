@@ -28,6 +28,20 @@ namespace Ajax0122.Controllers
             return View();
         }
 
+        public IActionResult AutoComplete()
+        {
+            return View();
+        }
+
+        public IActionResult Shippers()
+        {
+            return View();
+        }    
+
+        public IActionResult History()
+        {
+            return View();
+        }
         public IActionResult First()
         {
             return View();
@@ -42,8 +56,11 @@ namespace Ajax0122.Controllers
 		{
 			return View();
 		}
+        
 
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+       
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
